@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TTLS 术语测试</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="login-panel" id="loginPanel" aria-label="答题登录">
+        <div>
+          <p class="eyebrow">TTLS 专业术语字典</p>
+          <h1>术语通关测试</h1>
+          <p>请输入答题者姓名后开始。每轮随机 10 题，全部答对才算通过。</p>
+        </div>
+        <form class="login-form" id="loginForm">
+          <label for="playerName">答题者姓名</label>
+          <div class="login-row">
+            <input id="playerName" name="playerName" type="text" autocomplete="name" maxlength="32" required />
+            <button class="primary-button" type="submit">开始答题</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="quiz-screen hidden" id="quizScreen">
+      <section class="topbar" aria-label="测试状态">
+        <div>
+          <p class="eyebrow">TTLS 专业术语字典</p>
+          <h1>术语通关测试</h1>
+          <p class="player-line" id="playerLine"></p>
+        </div>
+        <div class="status-strip">
+          <span id="roundLabel">第 1 轮</span>
+          <span id="answeredLabel">0/10 已答</span>
+          <span id="scoreLabel">需全对</span>
+        </div>
+      </section>
+
+      <section class="summary-panel" id="summaryPanel" aria-live="polite">
+        <div>
+          <strong id="summaryTitle">随机 10 题，全部答对通过</strong>
+          <p id="summaryText">提交后如果没有满分，会自动生成一套新题。</p>
+        </div>
+        <button class="ghost-button" id="resetButton" type="button">换一套题</button>
+      </section>
+
+      <form id="quizForm" class="quiz-list"></form>
+
+      <section class="actionbar" aria-label="提交测试">
+        <button class="primary-button" id="submitButton" type="submit" form="quizForm">提交答案</button>
+        <p id="hintText">请选择每道题的一个答案。</p>
+      </section>
+      </section>
+    </main>
+
+    <dialog class="pass-dialog" id="passDialog">
+      <div class="dialog-body">
+        <strong>恭喜通过</strong>
+        <p id="passMessage">你已完成 TTLS 术语通关测试。</p>
+        <button class="primary-button" id="dialogCloseButton" type="button">好的</button>
+      </div>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
