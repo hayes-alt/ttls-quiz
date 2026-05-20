@@ -8,56 +8,64 @@
   </head>
   <body>
     <main class="app-shell">
-      <section class="login-panel" id="loginPanel" aria-label="答题登录">
-        <div>
-          <p class="eyebrow">TTLS 专业术语字典</p>
-          <h1>术语通关测试</h1>
-          <p>请输入答题者姓名后开始。每轮随机 10 题，全部答对才算通过。</p>
-        </div>
-        <form class="login-form" id="loginForm">
-          <label for="playerName">答题者姓名</label>
-          <div class="login-row">
-            <input id="playerName" name="playerName" type="text" autocomplete="name" maxlength="32" required />
-            <button class="primary-button" type="submit">开始答题</button>
-          </div>
-        </form>
-      </section>
-
       <section class="quiz-screen hidden" id="quizScreen">
-      <section class="topbar" aria-label="测试状态">
-        <div>
-          <p class="eyebrow">TTLS 专业术语字典</p>
-          <h1>术语通关测试</h1>
-          <p class="player-line" id="playerLine"></p>
-        </div>
-        <div class="status-strip">
-          <span id="roundLabel">第 1 轮</span>
-          <span id="answeredLabel">0/10 已答</span>
-          <span id="scoreLabel">需全对</span>
-        </div>
-      </section>
+        <section class="topbar" aria-label="测试状态">
+          <div>
+            <p class="eyebrow">TTLS 专业术语字典</p>
+            <h1>术语通关测试</h1>
+            <p class="player-line" id="playerLine"></p>
+          </div>
+          <div class="status-strip">
+            <span id="roundLabel">第 1 轮</span>
+            <span id="answeredLabel">0/10 已答</span>
+            <span id="scoreLabel">需全对</span>
+          </div>
+        </section>
 
-      <section class="summary-panel" id="summaryPanel" aria-live="polite">
-        <div>
-          <strong id="summaryTitle">随机 10 题，全部答对通过</strong>
-          <p id="summaryText">提交后如果没有满分，会自动生成一套新题。</p>
-        </div>
-        <button class="ghost-button" id="resetButton" type="button">换一套题</button>
-      </section>
+        <section class="summary-panel" id="summaryPanel" aria-live="polite">
+          <div>
+            <strong id="summaryTitle">随机 10 题，全部答对通过</strong>
+            <p id="summaryText">提交后会展示正确答案，未满分需要再次测试。</p>
+          </div>
+          <button class="ghost-button" id="resetButton" type="button">换一套题</button>
+        </section>
 
-      <form id="quizForm" class="quiz-list"></form>
+        <form id="quizForm" class="quiz-list"></form>
 
-      <section class="actionbar" aria-label="提交测试">
-        <button class="primary-button" id="submitButton" type="submit" form="quizForm">提交答案</button>
-        <p id="hintText">请选择每道题的一个答案。</p>
-      </section>
+        <section class="actionbar" aria-label="提交测试">
+          <button class="primary-button" id="submitButton" type="submit" form="quizForm">提交答案</button>
+          <p id="hintText">请选择每道题的一个答案。</p>
+        </section>
       </section>
     </main>
 
-    <dialog class="pass-dialog" id="passDialog">
+    <dialog class="app-dialog login-dialog" id="loginDialog">
+      <form class="dialog-body login-form" id="loginForm" method="dialog">
+        <p class="eyebrow">TTLS 专业术语字典</p>
+        <strong>开始前先登记姓名</strong>
+        <p>每轮随机 10 题，全部答对才算通关。</p>
+        <label for="playerName">答题者姓名</label>
+        <input id="playerName" name="playerName" type="text" autocomplete="name" maxlength="32" required />
+        <button class="primary-button" type="submit">开始答题</button>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog retry-dialog" id="retryDialog">
       <div class="dialog-body">
-        <strong>恭喜通过</strong>
-        <p id="passMessage">你已完成 TTLS 术语通关测试。</p>
+        <strong id="retryTitle">需要再次测试</strong>
+        <p id="retryMessage">本轮未达到通关标准。页面已展示正确答案，可回看后重新开始。</p>
+        <div class="dialog-actions">
+          <button class="ghost-button" id="reviewButton" type="button">先回看答案</button>
+          <button class="primary-button" id="retryButton" type="button">确认再次答题</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="app-dialog pass-dialog" id="passDialog">
+      <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+      <div class="dialog-body">
+        <strong id="passMessage">恭喜通关！</strong>
+        <p class="leader-hint">请将该页面截图通过飞书发给Leader</p>
         <button class="primary-button" id="dialogCloseButton" type="button">好的</button>
       </div>
     </dialog>

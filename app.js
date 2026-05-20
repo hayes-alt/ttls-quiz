@@ -53,7 +53,7 @@ let currentQuestions = [];
 let locked = false;
 let playerName = "";
 
-const loginPanel = document.querySelector("#loginPanel");
+const loginDialog = document.querySelector("#loginDialog");
 const loginForm = document.querySelector("#loginForm");
 const playerNameInput = document.querySelector("#playerName");
 const quizScreen = document.querySelector("#quizScreen");
@@ -70,7 +70,13 @@ const submitButton = document.querySelector("#submitButton");
 const hintText = document.querySelector("#hintText");
 const passDialog = document.querySelector("#passDialog");
 const passMessage = document.querySelector("#passMessage");
+const confettiLayer = document.querySelector("#confettiLayer");
 const dialogCloseButton = document.querySelector("#dialogCloseButton");
+const retryDialog = document.querySelector("#retryDialog");
+const retryTitle = document.querySelector("#retryTitle");
+const retryMessage = document.querySelector("#retryMessage");
+const retryButton = document.querySelector("#retryButton");
+const reviewButton = document.querySelector("#reviewButton");
 
 function shuffle(items) {
   return [...items].sort(() => Math.random() - 0.5);
@@ -100,7 +106,7 @@ function renderQuiz() {
   quizForm.innerHTML = "";
   summaryPanel.className = "summary-panel";
   summaryTitle.textContent = "随机 10 题，全部答对通过";
-  summaryText.textContent = "提交后如果没有满分，会自动生成一套新题。";
+  summaryText.textContent = "提交后会展示正确答案，未满分需要再次测试。";
   hintText.textContent = "请选择每道题的一个答案。";
   submitButton.disabled = false;
   submitButton.textContent = "提交答案";
@@ -187,20 +193,43 @@ function startNewRound() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function showPassDialog() {
-  passMessage.textContent = `${playerName} 已完成 TTLS 术语通关测试。`;
-  if (typeof passDialog.showModal === "function") {
-    passDialog.showModal();
-  } else {
-    alert("恭喜通过");
+function showModal(dialog) {
+  if (typeof dialog.showModal === "function") {
+    dialog.showModal();
   }
+}
+
+function launchConfetti() {
+  confettiLayer.innerHTML = "";
+  const count = 48;
+  for (let index = 0; index < count; index += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.animationDelay = `${Math.random() * 420}ms`;
+    piece.style.setProperty("--drift", `${Math.random() * 180 - 90}px`);
+    piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+    confettiLayer.appendChild(piece);
+  }
+}
+
+function showPassDialog() {
+  passMessage.textContent = `${playerName}，恭喜通关！`;
+  launchConfetti();
+  showModal(passDialog);
+}
+
+function showRetryDialog(correctCount) {
+  retryTitle.textContent = `本轮答对 ${correctCount}/10`;
+  retryMessage.textContent = "未达到 10/10 通关标准。页面已展示正确答案，请回看错题后确认再次答题。";
+  showModal(retryDialog);
 }
 
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   playerName = playerNameInput.value.trim();
   if (!playerName) return;
-  loginPanel.classList.add("hidden");
+  loginDialog.close();
   quizScreen.classList.remove("hidden");
   startNewRound();
 });
@@ -227,14 +256,11 @@ quizForm.addEventListener("submit", (event) => {
     summaryPanel.className = "summary-panel is-fail";
     summaryTitle.textContent = `未通过：答对 ${correctCount}/10`;
     summaryText.textContent = answeredCount < QUESTION_COUNT
-      ? `本轮还有 ${QUESTION_COUNT - answeredCount} 题未作答。3 秒后自动生成新题。`
-      : "需要满分才可通过。3 秒后自动生成新题。";
-    hintText.textContent = "正在准备新一轮随机题。";
-    submitButton.textContent = "重新出题中";
-    setTimeout(() => {
-      round += 1;
-      startNewRound();
-    }, 3000);
+      ? `本轮还有 ${QUESTION_COUNT - answeredCount} 题未作答。请先回看正确答案，再确认再次答题。`
+      : "需要满分才可通过。请先回看正确答案，再确认再次答题。";
+    hintText.textContent = "正确答案已展示在每道题下方。";
+    submitButton.textContent = "等待再次答题";
+    showRetryDialog(correctCount);
   }
 });
 
@@ -246,3 +272,23 @@ resetButton.addEventListener("click", () => {
 dialogCloseButton.addEventListener("click", () => {
   passDialog.close();
 });
+
+retryButton.addEventListener("click", () => {
+  retryDialog.close();
+  round += 1;
+  startNewRound();
+});
+
+reviewButton.addEventListener("click", () => {
+  retryDialog.close();
+});
+
+loginDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+});
+
+retryDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+});
+
+showModal(loginDialog);
